@@ -25,7 +25,7 @@ phpstan:
     - .install-dependencies
   stage: lint
   script:
-    - ./tools/phpstan --no-progress analyze ./src ./tests
+    - ./tools/phpstan --no-progress analyze ./src ./tests --memory-limit=2048M
 
 phpunit:
   stage: test
