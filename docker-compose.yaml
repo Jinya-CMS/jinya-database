@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  jinya-database:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+  jinya-mariadb:
+    image: library/mariadb
+    environment:
+      MYSQL_DATABASE: jinya
+      MYSQL_PASSWORD: jinya
+      MYSQL_ROOT_PASSWORD: jinya
+      MYSQL_USER: jinya
+  jinya-postgres:
+    image: library/postgres
+    environment:
+      POSTGRES_PASSWORD: jinya
+      POSTGRES_USER: jinya
+      POSTGRES_DB: jinya

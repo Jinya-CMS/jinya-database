@@ -1,0 +1,95 @@
+.install-dependencies:
+  variables:
+    PHP_MEMORY_LIMIT: "2048M"
+  image:
+    name: harbor.ulbricht.casa/jinya/jinya-cms-php-base-test-image:latest
+    pull_policy: always
+  before_script:
+    - install-php-extensions pdo_pgsql
+    - phive --no-progress install --trust-gpg-keys D615FEE32FD1702834DACC9C8AC0BAA79732DD42,D8406D0D82947747293778314AA394086372C20A,CA7C2C7A30C8E8E1274A847651C67305FFC2E5C0
+    - composer install
+
+stages:
+  - lint
+  - test
+
+pint:
+  extends:
+    - .install-dependencies
+  stage: lint
+  script:
+    - ./vendor/bin/pint --test
+
+phpstan:
+  extends:
+    - .install-dependencies
+  stage: lint
+  script:
+    - ./tools/phpstan --no-progress analyze ./src ./tests
+
+phpunit:
+  stage: test
+  extends:
+    - .install-dependencies
+  script:
+    - sleep 60
+    - ./tools/phpunit --no-progress --log-junit report.xml --configuration phpunit.ci.xml --coverage-cobertura=coverage.cobertura.xml
+  artifacts:
+    when: always
+    paths:
+      - report.xml
+    reports:
+      junit:
+        - report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
+  needs:
+    - phpstan
+  variables:
+    MYSQL_DATABASE: jinya
+    MYSQL_PASSWORD: jinya
+    MYSQL_ROOT_PASSWORD: jinya
+    MYSQL_USER: jinya
+    POSTGRES_PASSWORD: jinya
+    POSTGRES_USER: jinya
+    POSTGRES_DB: jinya
+  services:
+    - name: library/mysql:8.0
+      alias: mysql-8-0
+    - name: library/mysql:8.2
+      alias: mysql-8-2
+    - name: library/mariadb:10
+      alias: mariadb-10
+    - name: library/mariadb:11
+      alias: mariadb-11
+    - name: percona/percona-server:8.0
+      alias: percona-8-0
+    - name: library/postgres:12-alpine
+      alias: postgres-12
+    - name: library/postgres:13-alpine
+      alias: postgres-13
+    - name: library/postgres:14-alpine
+      alias: postgres-14
+    - name: library/postgres:15-alpine
+      alias: postgres-15
+    - name: library/postgres:16-alpine
+      alias: postgres-16
+  parallel:
+    matrix:
+      # MySQL testing
+      - DATABASE_DSN: 'mysql:host=mysql-8-0;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=mysql-8-2;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      # MariaDB testing
+      - DATABASE_DSN: 'mysql:host=mariadb-10;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=mariadb-11;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      # Percona testing
+      - DATABASE_DSN: 'mysql:host=percona-8-0;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      # Postgres testing
+      - DATABASE_DSN: 'pgsql:host=postgres-12;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-13;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-14;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-15;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-16;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      # Sqlite testing
+      - DATABASE_DSN: 'sqlite:file:/var/jinya/cache/db.sqlite'
