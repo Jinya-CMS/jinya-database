@@ -102,5 +102,5 @@ phpunit:
       - DATABASE_DSN: 'pgsql:host=postgres-16;port=5432;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'pgsql'
       # Sqlite testing
-      - DATABASE_DSN: 'sqlite:file:/var/jinya/cache/db.sqlite'
+      - DATABASE_DSN: 'sqlite::memory:'
         DATABASE_TYPE: 'sqlite'
