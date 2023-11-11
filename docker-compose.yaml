@@ -9,6 +9,8 @@ services:
       - .:/var/www/html
   jinya-mariadb:
     image: library/mariadb
+    ports:
+      - 3306:3306
     environment:
       MYSQL_DATABASE: jinya
       MYSQL_PASSWORD: jinya
@@ -16,6 +18,8 @@ services:
       MYSQL_USER: jinya
   jinya-postgres:
     image: library/postgres
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_PASSWORD: jinya
       POSTGRES_USER: jinya

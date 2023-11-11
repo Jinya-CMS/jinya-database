@@ -33,7 +33,6 @@ composer.phar
 .phpunit.result.cache
 .phpunit.cache
 /app/phpunit.xml
-/phpunit.pgsql.xml
 /build/
 tests/var
 /examples/*/var/

@@ -20,13 +20,12 @@ trait FindableEntityTrait
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
-            ->orderBy([$orderBy])
-            ->getStatement();
+            ->orderBy([$orderBy]);
 
+        /** @var array<array<array-key, mixed>> $data */
         $data = self::executeQuery($query);
-
         foreach ($data as $item) {
-            yield self::mapFindableEntity($item);
+            yield self::fromArray($item);
         }
     }
 
@@ -42,16 +41,15 @@ trait FindableEntityTrait
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
-            ->where('id = :id')
-            ->getStatement();
+            ->where('id = ?', [$id]);
 
-        $data = self::executeQuery($query, ['id' => $id]);
-
+        /** @var array<array<array-key, mixed>> $data */
+        $data = self::executeQuery($query);
         if (empty($data)) {
             return null;
         }
 
-        return self::mapFindableEntity($data[0]);
+        return self::fromArray($data[0]);
     }
 
     /**
@@ -70,12 +68,12 @@ trait FindableEntityTrait
             ->cols(self::getSqlColumnNames())
             ->orderBy([$orderBy])
             ->limit($count)
-            ->offset($start)
-            ->getStatement();
+            ->offset($start);
 
+        /** @var array<array<array-key, mixed>> $data */
         $data = self::executeQuery($query);
         foreach ($data as $item) {
-            yield self::mapFindableEntity($item);
+            yield self::fromArray($item);
         }
     }
 
@@ -98,30 +96,10 @@ trait FindableEntityTrait
             $query = $query->where($filter[0], $filter[1]);
         }
 
-        $query = $query->getStatement();
-
+        /** @var array<array<array-key, mixed>> $data */
         $data = self::executeQuery($query);
         foreach ($data as $item) {
-            yield self::mapFindableEntity($item);
+            yield self::fromArray($item);
         }
-    }
-
-    /**
-     * @param array<string, mixed> $item
-     * @return self
-     */
-    public static function mapFindableEntity(array $item): mixed
-    {
-        $entity = new self();
-        foreach ($item as $key => $value) {
-            $column = self::getColumnBySqlName($key);
-            if ($column && $column->converter) {
-                $entity->{$column->propertyName} = $column->converter->from($value);
-            } elseif ($column) {
-                $entity->{$column->propertyName} = $value;
-            }
-        }
-
-        return $entity;
     }
 }

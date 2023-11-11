@@ -23,6 +23,7 @@
     <php>
         <env name="CACHE_DIRECTORY" value="/var/jinya/cache/sqlite"/>
         <env name="DATABASE_DSN" value="sqlite:file:/var/jinya/cache/db.sqlite"/>
+        <env name="DATABASE_TYPE" value="sqlite"/>
 
         <includePath>/var/jinya/cache/sqlite</includePath>
     </php>

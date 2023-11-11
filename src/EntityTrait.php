@@ -2,6 +2,10 @@
 
 namespace Jinya\Database;
 
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use JetBrains\PhpStorm\ArrayShape;
 use Jinya\Database\Attributes\Column;
@@ -14,78 +18,10 @@ use PDOException;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
+use Throwable;
 
 trait EntityTrait
 {
-    /**
-     * @return PDO
-     */
-    public static function getPDO(): PDO
-    {
-        return new PDO(
-            /** @phpstan-ignore-next-line */
-            KeyCache::get('___Config', 'ConnectionString'),
-            /** @phpstan-ignore-next-line */
-            options: KeyCache::get('___Config', 'ConnectionOptions')
-        );
-    }
-
-    private static function getTableName(): string
-    {
-        $getTableName = static function (string $class): string {
-            /** @phpstan-ignore-next-line */
-            $reflectionClass = new ReflectionClass($class);
-            $attributes = $reflectionClass->getAttributes(Table::class);
-            if (!empty($attributes)) {
-                $attribute = $attributes[0];
-                return $attribute->newInstance()->name;
-            }
-
-            return $reflectionClass->getShortName();
-        };
-
-        /** @var string $tableName */
-        $tableName = FileCache::entry(
-            __FILE__,
-            __NAMESPACE__,
-            __CLASS__,
-            'Table',
-            static function (
-                string $filename,
-                string $namespace,
-                string $class,
-                string $key,
-                string $cacheClass
-            ) use ($getTableName): string {
-                $table = $getTableName($class);
-
-                return <<<PHP
-<?php
-global \$$cacheClass;
-
-\$$cacheClass = '$table';
-PHP;
-            }
-        );
-
-        if (!is_string($tableName)) {
-            return $getTableName(__CLASS__);
-        }
-
-        return $tableName;
-    }
-
-    /**
-     * @return QueryFactory
-     */
-    public static function getQueryBuilder(): QueryFactory
-    {
-        /** @var string $driver */
-        $driver = self::getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME);
-
-        return new QueryFactory($driver);
-    }
-
     private static function getColumnByProperty(string $name): CacheColumn|null
     {
         return self::getColumns()['byProperty'][$name] ?? null;
@@ -211,6 +147,51 @@ PHP;
         return $result;
     }
 
+    public static function getTableName(): string
+    {
+        $getTableName = static function (string $class): string {
+            /** @phpstan-ignore-next-line */
+            $reflectionClass = new ReflectionClass($class);
+            $attributes = $reflectionClass->getAttributes(Table::class);
+            if (!empty($attributes)) {
+                $attribute = $attributes[0];
+                return $attribute->newInstance()->name;
+            }
+
+            return $reflectionClass->getShortName();
+        };
+
+        /** @var string $tableName */
+        $tableName = FileCache::entry(
+            __FILE__,
+            __NAMESPACE__,
+            __CLASS__,
+            'Table',
+            static function (
+                string $filename,
+                string $namespace,
+                string $class,
+                string $key,
+                string $cacheClass
+            ) use ($getTableName): string {
+                $table = $getTableName($class);
+
+                return <<<PHP
+<?php
+global \$$cacheClass;
+
+\$$cacheClass = '$table';
+PHP;
+            }
+        );
+
+        if (!is_string($tableName)) {
+            return $getTableName(__CLASS__);
+        }
+
+        return $tableName;
+    }
+
     /**
      * @inheritdoc
      */
@@ -244,34 +225,86 @@ PHP;
     /**
      * Executes the sql query and returns the PDOStatement
      *
-     * @param string $query
-     * @param array<string, mixed> $values
+     * @param DeleteInterface|InsertInterface|SelectInterface|UpdateInterface $query
      * @return array<string, mixed>[]
      */
-    public static function executeQuery(string $query, array $values = []): array
-    {
+    public static function executeQuery(
+        DeleteInterface|InsertInterface|SelectInterface|UpdateInterface $query
+    ): array|string|bool {
         $pdo = self::getPDO();
-        $statement = $pdo->prepare($query);
-        if (!$statement) {
+        $statement = $pdo->prepare($query->getStatement());
+        if ($statement === false) {
             throw new PDOException('Failed to execute query');
         }
 
-        $statement->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $statement->setFetchMode(PDO::FETCH_ASSOC);
-        $result = $statement->execute($values);
-        if (!$result) {
+        try {
+            $statement->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (Throwable) {
+        }
+
+        $result = $statement->execute($query->getBindValues());
+        if ($result === false) {
             $ex = new PDOException('Failed to execute query');
             $ex->errorInfo = $statement->errorInfo();
             throw $ex;
         }
 
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if (!$result) {
-            $ex = new PDOException('Failed to execute query');
-            $ex->errorInfo = $statement->errorInfo();
-            throw $ex;
+        if ($query instanceof SelectInterface) {
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        return $result;
+        if ($query instanceof InsertInterface) {
+            return $pdo->lastInsertId();
+        }
+
+        return true;
+    }
+
+    /**
+     * Maps the given array to this class
+     *
+     * @param array<string, mixed> $item
+     * @return self
+     */
+    public static function fromArray(array $item): mixed
+    {
+        $entity = new self();
+        foreach ($item as $key => $value) {
+            $column = self::getColumnBySqlName($key);
+            if ($column && $column->converter) {
+                $entity->{$column->propertyName} = $column->converter->from($value);
+            } elseif ($column) {
+                $entity->{$column->propertyName} = $value;
+            }
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @return PDO
+     */
+    public static function getPDO(): PDO
+    {
+        /** @var PDO $pdo */
+        $pdo = KeyCache::entry('___Database', 'PDO', static fn (string $key) => new PDO(
+            /** @phpstan-ignore-next-line */
+            KeyCache::get('___Config', 'ConnectionString'),
+            /** @phpstan-ignore-next-line */
+            options: KeyCache::get('___Config', 'ConnectionOptions')
+        ));
+
+        return $pdo;
+    }
+
+    /**
+     * @return QueryFactory
+     */
+    public static function getQueryBuilder(): QueryFactory
+    {
+        /** @var string $driver */
+        $driver = self::getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        return new QueryFactory($driver);
     }
 }

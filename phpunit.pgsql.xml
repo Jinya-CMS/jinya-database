@@ -21,18 +21,18 @@
     </source>
 
     <php>
-        <env name="CACHE_DIRECTORY" value="/var/jinya/cache/mysql"/>
-        <env name="DATABASE_DSN" value="mysql:host=jinya-mariadb;port=3306;dbname=jinya;user=jinya;password=jinya;"/>
-        <env name="DATABASE_TYPE" value="mysql"/>
+        <env name="CACHE_DIRECTORY" value="/var/jinya/cache/pgsql"/>
+        <env name="DATABASE_DSN" value="pgsql:host=jinya-postgres;port=5432;dbname=jinya;user=jinya;password=jinya;"/>
+        <env name="DATABASE_TYPE" value="pgsql"/>
 
-        <includePath>/var/jinya/cache/mysql</includePath>
+        <includePath>/var/jinya/cache/pgsql</includePath>
     </php>
 
     <coverage cacheDirectory=".phpunit.cache/code-coverage">
         <report>
-            <clover outputFile="build/clover.mysql.xml"/>
-            <html outputDirectory="build/coverage.mysql"/>
-            <cobertura outputFile="build/coverage.mysql.cobertura.xml"/>
+            <clover outputFile="build/clover.pgsql.xml"/>
+            <html outputDirectory="build/coverage.pgsql"/>
+            <cobertura outputFile="build/coverage.pgsql.cobertura.xml"/>
         </report>
     </coverage>
 </phpunit>

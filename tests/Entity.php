@@ -6,10 +6,10 @@ use DateTime;
 use Jinya\Database\Attributes\Column;
 use Jinya\Database\Attributes\Table;
 
-#[Table('findable_entity')]
-class FindableEntity implements Findable, JsonSerializable
+#[Table('entity')]
+class Entity implements JsonSerializable
 {
-    use FindableEntityTrait;
+    use EntityTrait;
 
     #[Column]
     public int $id;
