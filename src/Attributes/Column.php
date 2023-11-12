@@ -9,8 +9,7 @@ use Jinya\Database\ValueConverter;
 class Column
 {
     public function __construct(
-        public readonly string $sqlName = '',
-        public readonly ValueConverter|null $converter = null
+        public readonly string $sqlName = ''
     ) {
     }
 }

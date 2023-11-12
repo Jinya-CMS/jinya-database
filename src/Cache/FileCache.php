@@ -34,7 +34,7 @@ abstract class FileCache
             'CacheDirectory',
             static fn ($val) => (PHP_SAPI === 'cli' ? getcwd(
             ) : $_SERVER['DOCUMENT_ROOT']) . '/var/cache/jinya/database/'
-        ) . str_replace('\\', '/', $namespace);
+        ) . '/' . str_replace('\\', '/', $namespace);
 
         if (!@mkdir($cacheDirectory, recursive: true) && !is_dir($cacheDirectory)) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $cacheDirectory));

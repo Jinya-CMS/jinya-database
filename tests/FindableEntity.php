@@ -7,7 +7,7 @@ use Jinya\Database\Attributes\Column;
 use Jinya\Database\Attributes\Table;
 
 #[Table('findable_entity')]
-class FindableEntity implements Findable, JsonSerializable
+class FindableEntity implements Findable
 {
     use FindableEntityTrait;
 
@@ -20,6 +20,7 @@ class FindableEntity implements Findable, JsonSerializable
     #[Column(sqlName: 'display_name')]
     public string $displayName;
 
-    #[Column(converter: new DateConverter('Y-m-d H:i:s'))]
+    #[Column]
+    #[DateConverter('Y-m-d H:i:s')]
     public DateTime $date;
 }

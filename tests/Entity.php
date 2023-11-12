@@ -7,7 +7,7 @@ use Jinya\Database\Attributes\Column;
 use Jinya\Database\Attributes\Table;
 
 #[Table('entity')]
-class Entity implements JsonSerializable
+class Entity
 {
     use EntityTrait;
 
@@ -20,6 +20,7 @@ class Entity implements JsonSerializable
     #[Column(sqlName: 'display_name')]
     public string $displayName;
 
-    #[Column(converter: new DateConverter('Y-m-d H:i:s'))]
+    #[Column]
+    #[DateConverter('Y-m-d H:i:s')]
     public DateTime $date;
 }

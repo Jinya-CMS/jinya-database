@@ -124,4 +124,37 @@ class EntityTest extends TestCase
         $result = Entity::executeQuery($query);
         self::assertEmpty($result);
     }
+
+    public function testGetTableName(): void
+    {
+        $tableName = Entity::getTableName();
+
+        self::assertEquals('entity', $tableName);
+    }
+
+    public function testGetTableNameNoExplicitName(): void
+    {
+        $tableName = EntityNoExplicitName::getTableName();
+
+        self::assertEquals('EntityNoExplicitName', $tableName);
+    }
+
+    public function testFromArray(): void
+    {
+        $query = Entity::getQueryBuilder()
+            ->newSelect()
+            ->from(Entity::getTableName())
+            ->cols(['*'])
+            ->limit(1)
+            ->orderBy(['id ASC']);
+        /** @var array<array<string, mixed>> $result */
+        $result = Entity::executeQuery($query);
+
+        $entity = Entity::fromArray($result[0]);
+        self::assertEquals($entity->id, $result[0]['id']);
+        self::assertEquals($entity->name, $result[0]['name']);
+        self::assertEquals($entity->displayName, $result[0]['display_name']);
+        /** @phpstan-ignore-next-line */
+        self::assertEquals($entity->date, (new DateConverter('Y-m-d H:i:s'))->from($result[0]['date']));
+    }
 }

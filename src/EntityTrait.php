@@ -73,7 +73,13 @@ trait EntityTrait
                     $converterString = 'null';
                     if (!empty($converterAttributes)) {
                         $converter = $converterAttributes[0]->newInstance();
-                        $converterArgs = implode(', ', $converterAttributes[0]->getArguments());
+                        $converterArgs = implode(
+                            ', ',
+                            array_map(
+                                static fn (mixed $arg) => var_export($arg, true),
+                                $converterAttributes[0]->getArguments()
+                            )
+                        );
                         $converterClass = $converterAttributes[0]->getName();
                         $converterString = "new $converterClass($converterArgs)";
                     }
@@ -88,10 +94,12 @@ trait EntityTrait
             return $result;
         };
 
+        /** @var string $filename */
+        $filename = (new ReflectionClass(static::class))->getFileName();
         $columns = FileCache::entry(
-            __FILE__,
+            $filename,
             __NAMESPACE__,
-            __CLASS__,
+            static::class,
             'Columns',
             static function (
                 string $filename,
@@ -133,7 +141,7 @@ PHP;
             return $columns;
         }
 
-        $columns = $getColumns(__CLASS__);
+        $columns = $getColumns(static::class);
         $result = [
             'byProperty' => [],
             'bySqlName' => [],
@@ -147,6 +155,11 @@ PHP;
         return $result;
     }
 
+    /**
+     * Gets the name of the table
+     *
+     * @return string
+     */
     public static function getTableName(): string
     {
         $getTableName = static function (string $class): string {
@@ -155,17 +168,21 @@ PHP;
             $attributes = $reflectionClass->getAttributes(Table::class);
             if (!empty($attributes)) {
                 $attribute = $attributes[0];
+
                 return $attribute->newInstance()->name;
             }
 
             return $reflectionClass->getShortName();
         };
 
+        /** @var string $filename */
+        $filename = (new ReflectionClass(static::class))->getFileName();
+
         /** @var string $tableName */
         $tableName = FileCache::entry(
-            __FILE__,
+            $filename,
             __NAMESPACE__,
-            __CLASS__,
+            static::class,
             'Table',
             static function (
                 string $filename,
@@ -190,36 +207,6 @@ PHP;
         }
 
         return $tableName;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function jsonDeserialize(array $data): mixed
-    {
-        $self = new self();
-        foreach ($data as $key => $value) {
-            if (property_exists($self, $key)) {
-                $self->$key = $value;
-            }
-        }
-
-        return $self;
-    }
-
-    /**
-     * @inheritdoc
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        $result = [];
-        foreach (self::getColumns()['byProperty'] as $column) {
-            /** @var CacheColumn $column */
-            $result[$column->propertyName] = $this->{$column->propertyName};
-        }
-
-        return $result;
     }
 
     /**
