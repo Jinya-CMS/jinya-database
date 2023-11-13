@@ -80,7 +80,7 @@ trait FindableEntityTrait
     /**
      * Finds the entity by the given filters
      *
-     * @param array<array{string, array<array-key, mixed>}> $filters
+     * @param array<string, array<string, mixed>> $filters
      * @param string $orderBy
      * @return Iterator<self>
      */
@@ -92,8 +92,8 @@ trait FindableEntityTrait
             ->cols(self::getSqlColumnNames())
             ->orderBy([$orderBy]);
 
-        foreach ($filters as $filter) {
-            $query = $query->where($filter[0], $filter[1]);
+        foreach ($filters as $key => $filter) {
+            $query = $query->where($key, $filter);
         }
 
         /** @var array<array<array-key, mixed>> $data */

@@ -96,8 +96,9 @@ trait EntityTrait
 
         /** @var string $filename */
         $filename = (new ReflectionClass(static::class))->getFileName();
+        /** @var array<string, array<string, CacheColumn>> $columns */
         $columns = FileCache::entry(
-            $filename,
+            $filename . 'Columns',
             __NAMESPACE__,
             static::class,
             'Columns',
@@ -137,22 +138,8 @@ $bySqlName
 PHP;
             }
         );
-        if (is_array($columns)) {
-            return $columns;
-        }
 
-        $columns = $getColumns(static::class);
-        $result = [
-            'byProperty' => [],
-            'bySqlName' => [],
-        ];
-        foreach ($columns as $column) {
-            $col = $column['column'];
-            $result['byProperty'][$col->propertyName] = $col;
-            $result['bySqlName'][$col->sqlName] = $col;
-        }
-
-        return $result;
+        return $columns;
     }
 
     /**
@@ -180,7 +167,7 @@ PHP;
 
         /** @var string $tableName */
         $tableName = FileCache::entry(
-            $filename,
+            $filename . 'Table',
             __NAMESPACE__,
             static::class,
             'Table',
@@ -201,10 +188,6 @@ global \$$cacheClass;
 PHP;
             }
         );
-
-        if (!is_string($tableName)) {
-            return $getTableName(__CLASS__);
-        }
 
         return $tableName;
     }
