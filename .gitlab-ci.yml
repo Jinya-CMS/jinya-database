@@ -2,7 +2,7 @@
   variables:
     PHP_MEMORY_LIMIT: "2048M"
   image:
-    name: harbor.ulbricht.casa/jinya/jinya-cms-php-base-test-image:latest
+    name: registry.ulbricht.casa/jinya-cms/jinya-cms-php-base-test-image:latest
     pull_policy: always
   before_script:
     - install-php-extensions pdo_pgsql
