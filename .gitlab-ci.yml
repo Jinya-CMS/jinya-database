@@ -50,49 +50,69 @@ phpunit:
   services:
     - name: library/mysql:8.0
       alias: mysql-8-0
+      variables:
+        MYSQL_TCP_PORT: 33180
     - name: library/mysql:8.2
       alias: mysql-8-2
+      variables:
+        MYSQL_TCP_PORT: 33182
     - name: library/mariadb:10
       alias: mariadb-10
+      variables:
+        MYSQL_TCP_PORT: 33210
     - name: library/mariadb:11
       alias: mariadb-11
+      variables:
+        MYSQL_TCP_PORT: 33211
     - name: percona/percona-server:8.0
       alias: percona-8-0
+      variables:
+        MYSQL_TCP_PORT: 33380
     - name: library/postgres:12-alpine
       alias: postgres-12
+      variables:
+        PGPORT: 5412
     - name: library/postgres:13-alpine
       alias: postgres-13
+      variables:
+        PGPORT: 5413
     - name: library/postgres:14-alpine
       alias: postgres-14
+      variables:
+        PGPORT: 5414
     - name: library/postgres:15-alpine
       alias: postgres-15
+      variables:
+        PGPORT: 5415
     - name: library/postgres:16-alpine
       alias: postgres-16
+      variables:
+        PGPORT: 5416
   parallel:
     matrix:
       # MySQL testing
-      - DATABASE_DSN: 'mysql:host=mysql-8-0;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=mysql-8-0;port=33180;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
-      - DATABASE_DSN: 'mysql:host=mysql-8-2;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=mysql-8-2;port=33182;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
       # MariaDB testing
-      - DATABASE_DSN: 'mysql:host=mariadb-10;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=mariadb-10;port=33210;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
-      - DATABASE_DSN: 'mysql:host=mariadb-11;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=mariadb-11;port=33211;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
       # Percona testing
-      - DATABASE_DSN: 'mysql:host=percona-8-0;port=3306;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'mysql:host=percona-8-0;port=33380;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
       # Postgres testing
-      - DATABASE_DSN: 'pgsql:host=postgres-12;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-12;port=5412;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'pgsql'
-      - DATABASE_DSN: 'pgsql:host=postgres-13;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-13;port=5413;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'pgsql'
-      - DATABASE_DSN: 'pgsql:host=postgres-14;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-14;port=5414;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'pgsql'
-      - DATABASE_DSN: 'pgsql:host=postgres-15;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-15;port=5415;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'pgsql'
-      - DATABASE_DSN: 'pgsql:host=postgres-16;port=5432;dbname=jinya;user=jinya;password=jinya;'
+      - DATABASE_DSN: 'pgsql:host=postgres-16;port=5416;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'pgsql'
       # Sqlite testing
       - DATABASE_DSN: 'sqlite::memory:'
