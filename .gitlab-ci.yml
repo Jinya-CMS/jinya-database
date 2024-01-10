@@ -64,10 +64,6 @@ phpunit:
       alias: mariadb-11
       variables:
         MYSQL_TCP_PORT: 33211
-    - name: percona/percona-server:8.0
-      alias: percona-8-0
-      variables:
-        MYSQL_TCP_PORT: 33380
     - name: library/postgres:12-alpine
       alias: postgres-12
       variables:
@@ -99,9 +95,6 @@ phpunit:
       - DATABASE_DSN: 'mysql:host=mariadb-10;port=33210;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
       - DATABASE_DSN: 'mysql:host=mariadb-11;port=33211;dbname=jinya;user=jinya;password=jinya;'
-        DATABASE_TYPE: 'mysql'
-      # Percona testing
-      - DATABASE_DSN: 'mysql:host=percona-8-0;port=33380;dbname=jinya;user=jinya;password=jinya;'
         DATABASE_TYPE: 'mysql'
       # Postgres testing
       - DATABASE_DSN: 'pgsql:host=postgres-12;port=5412;dbname=jinya;user=jinya;password=jinya;'
