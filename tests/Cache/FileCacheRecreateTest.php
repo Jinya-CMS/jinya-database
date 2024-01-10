@@ -4,8 +4,6 @@ namespace Jinya\Database\Cache;
 
 use PHPUnit\Framework\TestCase;
 
-use function Jinya\Database\configure_jinya_database;
-
 class FileCacheRecreateTest extends TestCase
 {
     public function testEntryRecreate(): void
@@ -61,7 +59,7 @@ PHP;
 
         self::assertArrayHasKey('test', $cachedData);
         self::assertEquals('Goodbye World!', $cachedData['test']);
-        
+
         FileCache::entry(
             __FILE__,
             __NAMESPACE__,

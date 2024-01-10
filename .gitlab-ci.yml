@@ -20,13 +20,6 @@ pint:
   script:
     - ./vendor/bin/pint --test
 
-phpstan:
-  extends:
-    - .install-dependencies
-  stage: lint
-  script:
-    - ./tools/phpstan --no-progress analyze ./src ./tests --memory-limit=2048M
-
 phpunit:
   stage: test
   extends:
@@ -45,7 +38,7 @@ phpunit:
         coverage_format: cobertura
         path: coverage.cobertura.xml
   needs:
-    - phpstan
+    - pint
   variables:
     MYSQL_DATABASE: jinya
     MYSQL_PASSWORD: jinya

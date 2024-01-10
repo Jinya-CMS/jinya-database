@@ -27,7 +27,7 @@ trait CreatableEntityTrait
             ->addRow($row);
 
         self::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
-        $id = self::getPDO()->lastInsertId();
+        $id = self::getPDO()->lastInsertId() ?: '';
 
         $createdEntity = self::findById($id);
         $columns = self::getColumns();
