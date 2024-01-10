@@ -1,7 +1,7 @@
 {
   "name": "jinya/database",
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "ext-pdo": "*",
     "aura/sqlquery": "3.0.0",
     "jetbrains/phpstorm-attributes": "1.0"

@@ -41,8 +41,8 @@ abstract class FileCache
         }
 
         $reflectionClass = new ReflectionClass($class);
-        $cacheClass = $reflectionClass->getShortName() . '__' . $key;
-        $cachePath = $cacheDirectory . '/' . basename($filename) . '.cache.php';
+        $cacheClass = $reflectionClass->getShortName() . "__$key";
+        $cachePath = "$cacheDirectory/" . basename($filename) . ".$key.cache.php";
         if ($force || !file_exists($cachePath) || filemtime($cachePath) < filemtime($filename)) {
             $phpCacheContent = $setter($filename, $namespace, $class, $key, $cacheClass);
             file_put_contents($cachePath, $phpCacheContent);
