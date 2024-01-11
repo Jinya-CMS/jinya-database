@@ -6,7 +6,6 @@ use DateTime;
 use Jinya\Database\Attributes\Column;
 use Jinya\Database\Attributes\Id;
 use Jinya\Database\Attributes\Table;
-use Jinya\Database\Converters\DateConverter;
 
 #[Table('findable_entity')]
 class FindableEntity implements Findable

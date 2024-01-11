@@ -16,10 +16,17 @@ trait DeletableEntityTrait
      */
     public function delete(): void
     {
+        $where = self::getWhereToIdentifyEntity();
+
         $statement = $this->getQueryBuilder()
             ->newDelete()
-            ->from(self::getTableName())
-            ->where(...self::getWhereToIdentifyEntity());
+            ->from(self::getTableName());
+
+        foreach ($where['conditions'] as $condition) {
+            $statement->where($condition);
+        }
+
+        $statement->bindValues($where['values']);
 
         self::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
     }

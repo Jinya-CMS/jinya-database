@@ -5,7 +5,7 @@ namespace Jinya\Database;
 interface Deletable
 {
     /**
-     * Creates the current entity
+     * Deletes the current entity
      */
     public function delete(): void;
 }

@@ -9,7 +9,7 @@ use Jinya\Database\Attributes\Table;
 use Jinya\Database\Converters\DateConverter;
 
 #[Table('deletable_entity')]
-class DeletableEntityWithId implements Findable
+class DeletableEntityWithId implements Findable, Deletable
 {
     use FindableEntityTrait;
     use DeletableEntityTrait;

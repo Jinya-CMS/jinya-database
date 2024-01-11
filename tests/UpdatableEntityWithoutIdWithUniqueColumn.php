@@ -7,13 +7,13 @@ use Jinya\Database\Attributes\Column;
 use Jinya\Database\Attributes\Table;
 use Jinya\Database\Converters\DateConverter;
 
-#[Table('deletable_entity_without_id_without_unique_column')]
-class DeletableEntityWithoutIdWithoutUniqueColumn implements Findable, Deletable
+#[Table('updatable_entity_without_id_with_unique_column')]
+class UpdatableEntityWithoutIdWithUniqueColumn implements Findable, Updatable
 {
     use FindableEntityTrait;
-    use DeletableEntityTrait;
+    use UpdatableEntityTrait;
 
-    #[Column]
+    #[Column(unique: true)]
     public string $name;
 
     #[Column(sqlName: 'display_name')]
