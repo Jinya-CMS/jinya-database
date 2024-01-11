@@ -8,11 +8,8 @@ use Jinya\Database\Attributes\Table;
 use Jinya\Database\Converters\DateConverter;
 
 #[Table('updatable_entity_without_id_with_unique_column')]
-class UpdatableEntityWithoutIdWithUniqueColumn implements Findable, Updatable
+class UpdatableEntityWithoutIdWithUniqueColumn extends Entity
 {
-    use FindableEntityTrait;
-    use UpdatableEntityTrait;
-
     #[Column(unique: true)]
     public string $name;
 

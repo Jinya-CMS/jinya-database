@@ -21,13 +21,14 @@ trait CreatableEntityTrait
         $this->checkRequiredColumns();
         $row = $this->toSqlArray();
 
-        $statement = CreatableEntity::getQueryBuilder()
+        $insert = CreatableEntity::getQueryBuilder()
             ->newInsert()
             ->into(CreatableEntity::getTableName())
             ->addRow($row);
 
-        self::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
-        $id = self::getPDO()->lastInsertId() ?: '';
+        self::getPDO()->prepare($insert->getStatement())->execute($insert->getBindValues());
+        $lastInsertId = $insert->getLastInsertIdName(self::getIdProperty()['sqlName']);
+        $id = self::getPDO()->lastInsertId($lastInsertId) ?: '';
 
         $createdEntity = self::findById($id);
         $columns = self::getColumns();

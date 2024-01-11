@@ -16,14 +16,14 @@ trait FindableEntityTrait
      */
     public static function findAll(string $orderBy = 'id ASC'): Iterator
     {
-        $query = self::getQueryBuilder()
+        $select = self::getQueryBuilder()
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
             ->orderBy([$orderBy]);
 
         /** @var array<array<array-key, mixed>> $data */
-        $data = self::executeQuery($query);
+        $data = self::executeQuery($select);
         foreach ($data as $item) {
             yield self::fromArray($item);
         }
@@ -38,14 +38,14 @@ trait FindableEntityTrait
     public static function findById(string|int $id): mixed
     {
         $idColumn = self::getIdProperty()['sqlName'] ?? 'id';
-        $query = self::getQueryBuilder()
+        $select = self::getQueryBuilder()
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
             ->where("$idColumn = ?", [$id]);
 
         /** @var array<array<array-key, mixed>> $data */
-        $data = self::executeQuery($query);
+        $data = self::executeQuery($select);
         if (empty($data)) {
             return null;
         }
@@ -63,7 +63,7 @@ trait FindableEntityTrait
      */
     public static function findRange(int $start, int $count, string $orderBy = 'id ASC'): Iterator
     {
-        $query = self::getQueryBuilder()
+        $select = self::getQueryBuilder()
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
@@ -72,7 +72,7 @@ trait FindableEntityTrait
             ->offset($start);
 
         /** @var array<array<array-key, mixed>> $data */
-        $data = self::executeQuery($query);
+        $data = self::executeQuery($select);
         foreach ($data as $item) {
             yield self::fromArray($item);
         }
@@ -87,18 +87,18 @@ trait FindableEntityTrait
      */
     public static function findByFilters(array $filters, string $orderBy = 'id ASC'): Iterator
     {
-        $query = self::getQueryBuilder()
+        $select = self::getQueryBuilder()
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
             ->orderBy([$orderBy]);
 
         foreach ($filters as $key => $filter) {
-            $query = $query->where($key, $filter);
+            $select = $select->where($key, $filter);
         }
 
         /** @var array<array<array-key, mixed>> $data */
-        $data = self::executeQuery($query);
+        $data = self::executeQuery($select);
         foreach ($data as $item) {
             yield self::fromArray($item);
         }

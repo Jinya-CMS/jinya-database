@@ -9,10 +9,8 @@ use Jinya\Database\Attributes\Table;
 use Jinya\Database\Converters\DateConverter;
 
 #[Table('entity')]
-class TestEntity
+class TestEntity extends Entity
 {
-    use EntityTrait;
-
     #[Id]
     #[Column]
     public int $id;

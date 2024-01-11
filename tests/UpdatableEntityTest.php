@@ -88,9 +88,14 @@ class UpdatableEntityTest extends TestCase
             ->newInsert()
             ->into(UpdatableEntityWithoutIdWithUniqueColumn::getTableName())
             ->addRows($rows);
-        UpdatableEntityWithoutIdWithUniqueColumn::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
+        UpdatableEntityWithoutIdWithUniqueColumn::getPDO()->prepare($statement->getStatement())->execute(
+            $statement->getBindValues()
+        );
 
-        $entity = UpdatableEntityWithoutIdWithUniqueColumn::findByFilters(['name = ?' => ['Test']], 'name ASC')->current();
+        $entity = UpdatableEntityWithoutIdWithUniqueColumn::findByFilters(
+            ['name = ?' => ['Test']],
+            'name ASC'
+        )->current();
         $entity->displayName = 'Test case 1';
         $entity->update();
 
@@ -109,9 +114,14 @@ class UpdatableEntityTest extends TestCase
             ->newInsert()
             ->into(UpdatableEntityWithoutIdWithoutUniqueColumn::getTableName())
             ->addRows($rows);
-        UpdatableEntityWithoutIdWithoutUniqueColumn::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
+        UpdatableEntityWithoutIdWithoutUniqueColumn::getPDO()->prepare($statement->getStatement())->execute(
+            $statement->getBindValues()
+        );
 
-        $entity = UpdatableEntityWithoutIdWithoutUniqueColumn::findByFilters(['name = ?' => ['Test']], 'name ASC')->current();
+        $entity = UpdatableEntityWithoutIdWithoutUniqueColumn::findByFilters(
+            ['name = ?' => ['Test']],
+            'name ASC'
+        )->current();
         $entity->displayName = 'Test case 1';
         $entity->update();
 

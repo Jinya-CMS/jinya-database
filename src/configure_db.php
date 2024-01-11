@@ -12,8 +12,12 @@ use Jinya\Database\Cache\KeyCache;
  * @param array<string, mixed> $connectionOptions
  * @return void
  */
-function configure_jinya_database(string $cacheDirectory, string $connectionString, array $connectionOptions = [], bool $enableAutoConvert = true): void
-{
+function configure_jinya_database(
+    string $cacheDirectory,
+    string $connectionString,
+    array $connectionOptions = [],
+    bool $enableAutoConvert = true
+): void {
     KeyCache::entry('___Config', 'CacheDirectory', static fn (string $key) => $cacheDirectory, true);
     KeyCache::entry('___Config', 'ConnectionString', static fn (string $key) => $connectionString, true);
     KeyCache::entry('___Config', 'ConnectionOptions', static fn (string $key) => $connectionOptions, true);

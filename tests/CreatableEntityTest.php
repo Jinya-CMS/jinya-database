@@ -8,35 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class CreatableEntityTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $identity = match (getenv('DATABASE_TYPE')) {
-            'mysql' => 'auto_increment',
-            'sqlite' => 'autoincrement',
-            'pgsql' => 'generated always as identity',
-            default => throw new \RuntimeException(),
-        };
-
-        $tableName = CreatableEntity::getTableName();
-        CreatableEntity::getPDO()->exec(
-            "
-        create table $tableName (
-            id integer primary key $identity,
-            name varchar(255) not null,
-            display_name varchar(255),
-            date timestamp
-        )"
-        );
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $tableName = CreatableEntity::getTableName();
-        CreatableEntity::getPDO()->exec("drop table $tableName");
-    }
-
     public function testCreateEntityWithAllFields(): void
     {
         $entity = new CreatableEntity();
@@ -66,5 +37,34 @@ class CreatableEntityTest extends TestCase
         $entity = new CreatableEntity();
         $entity->date = new DateTime('now');
         $entity->create();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $identity = match (getenv('DATABASE_TYPE')) {
+            'mysql' => 'auto_increment',
+            'sqlite' => 'autoincrement',
+            'pgsql' => 'generated always as identity',
+            default => throw new \RuntimeException(),
+        };
+
+        $tableName = CreatableEntity::getTableName();
+        CreatableEntity::getPDO()->exec(
+            "
+        create table $tableName (
+            id integer primary key $identity,
+            name varchar(255) not null,
+            display_name varchar(255),
+            date timestamp
+        )"
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $tableName = CreatableEntity::getTableName();
+        CreatableEntity::getPDO()->exec("drop table $tableName");
     }
 }

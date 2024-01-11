@@ -13,17 +13,6 @@ abstract class KeyCache
     private static array $cache = [];
 
     /**
-     * @param string $group
-     * @return void
-     */
-    private static function prepareCache(string $group): void
-    {
-        if (!array_key_exists($group, self::$cache)) {
-            self::$cache[$group] = [];
-        }
-    }
-
-    /**
      * Gets the given key or stores the return value of the given setter
      *
      * @param string $group
@@ -41,6 +30,17 @@ abstract class KeyCache
         }
 
         return self::$cache[$group][$key];
+    }
+
+    /**
+     * @param string $group
+     * @return void
+     */
+    private static function prepareCache(string $group): void
+    {
+        if (!array_key_exists($group, self::$cache)) {
+            self::$cache[$group] = [];
+        }
     }
 
     /**

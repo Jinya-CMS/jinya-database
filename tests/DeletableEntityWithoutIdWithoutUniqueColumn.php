@@ -8,11 +8,8 @@ use Jinya\Database\Attributes\Table;
 use Jinya\Database\Converters\DateConverter;
 
 #[Table('deletable_entity_without_id_without_unique_column')]
-class DeletableEntityWithoutIdWithoutUniqueColumn implements Findable, Deletable
+class DeletableEntityWithoutIdWithoutUniqueColumn extends Entity
 {
-    use FindableEntityTrait;
-    use DeletableEntityTrait;
-
     #[Column]
     public string $name;
 

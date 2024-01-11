@@ -86,9 +86,14 @@ class DeletableEntityTest extends TestCase
             ->newInsert()
             ->into(DeletableEntityWithoutIdWithUniqueColumn::getTableName())
             ->addRows($rows);
-        DeletableEntityWithoutIdWithUniqueColumn::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
+        DeletableEntityWithoutIdWithUniqueColumn::getPDO()->prepare($statement->getStatement())->execute(
+            $statement->getBindValues()
+        );
 
-        $entity = DeletableEntityWithoutIdWithUniqueColumn::findByFilters(['name = ?' => ['Test']], 'name ASC')->current();
+        $entity = DeletableEntityWithoutIdWithUniqueColumn::findByFilters(
+            ['name = ?' => ['Test']],
+            'name ASC'
+        )->current();
         $entity->delete();
 
         self::assertCount(1, iterator_to_array(DeletableEntityWithoutIdWithUniqueColumn::findAll('name ASC')));
@@ -104,9 +109,14 @@ class DeletableEntityTest extends TestCase
             ->newInsert()
             ->into(DeletableEntityWithoutIdWithoutUniqueColumn::getTableName())
             ->addRows($rows);
-        DeletableEntityWithoutIdWithoutUniqueColumn::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
+        DeletableEntityWithoutIdWithoutUniqueColumn::getPDO()->prepare($statement->getStatement())->execute(
+            $statement->getBindValues()
+        );
 
-        $entity = DeletableEntityWithoutIdWithoutUniqueColumn::findByFilters(['name = ?' => ['Test']], 'name ASC')->current();
+        $entity = DeletableEntityWithoutIdWithoutUniqueColumn::findByFilters(
+            ['name = ?' => ['Test']],
+            'name ASC'
+        )->current();
         $entity->delete();
 
         self::assertCount(1, iterator_to_array(DeletableEntityWithoutIdWithoutUniqueColumn::findAll('name ASC')));
