@@ -32,6 +32,9 @@
       <path value="$PROJECT_DIR$/vendor/jetbrains/phpstorm-attributes" />
       <path value="$PROJECT_DIR$/vendor/aura/sqlquery" />
       <path value="$PROJECT_DIR$/vendor/laravel/pint" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">

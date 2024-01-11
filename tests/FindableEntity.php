@@ -24,6 +24,5 @@ class FindableEntity implements Findable
     public string $displayName;
 
     #[Column]
-    #[DateConverter('Y-m-d H:i:s')]
     public DateTime $date;
 }
