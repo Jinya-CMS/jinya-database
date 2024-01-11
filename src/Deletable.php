@@ -2,10 +2,10 @@
 
 namespace Jinya\Database;
 
-interface Creatable
+interface Deletable
 {
     /**
      * Creates the current entity
      */
-    public function create(): void;
+    public function delete(): void;
 }

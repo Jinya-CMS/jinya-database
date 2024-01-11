@@ -37,11 +37,12 @@ trait FindableEntityTrait
      */
     public static function findById(string|int $id): mixed
     {
+        $idColumn = self::getIdProperty()['sqlName'] ?? 'id';
         $query = self::getQueryBuilder()
             ->newSelect()
             ->from(self::getTableName())
             ->cols(self::getSqlColumnNames())
-            ->where('id = ?', [$id]);
+            ->where("$idColumn = ?", [$id]);
 
         /** @var array<array<array-key, mixed>> $data */
         $data = self::executeQuery($query);

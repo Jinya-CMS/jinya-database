@@ -2,7 +2,10 @@
 
 namespace Jinya\Database;
 
+use Jinya\Database\Converters\DateConverter;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use RuntimeException;
 
 class EntityTest extends TestCase
 {
@@ -13,11 +16,11 @@ class EntityTest extends TestCase
             'mysql' => 'auto_increment',
             'sqlite' => 'autoincrement',
             'pgsql' => 'generated always as identity',
-            default => throw new \RuntimeException(),
+            default => throw new RuntimeException(),
         };
 
-        $tableName = Entity::getTableName();
-        Entity::getPDO()->exec(
+        $tableName = TestEntity::getTableName();
+        TestEntity::getPDO()->exec(
             "
         create table $tableName (
             id integer primary key $identity,
@@ -32,48 +35,48 @@ class EntityTest extends TestCase
             $rows[] = ['name' => "Test $i", 'display_name' => "Test case $i", 'date' => "20$i-09-11 20:34:25"];
         }
 
-        $statement = Entity::getQueryBuilder()
+        $statement = TestEntity::getQueryBuilder()
             ->newInsert()
-            ->into(Entity::getTableName())
+            ->into(TestEntity::getTableName())
             ->addRows($rows);
-        Entity::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
+        TestEntity::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        $tableName = Entity::getTableName();
-        Entity::getPDO()->exec("drop table $tableName");
+        $tableName = TestEntity::getTableName();
+        TestEntity::getPDO()->exec("drop table $tableName");
     }
 
     public function testGetPDO(): void
     {
-        $pdo = Entity::getPDO();
+        $pdo = TestEntity::getPDO();
 
         self::assertNotNull($pdo);
 
-        $pdo2 = Entity::getPDO();
+        $pdo2 = TestEntity::getPDO();
 
         self::assertEquals($pdo, $pdo2);
     }
 
     public function testExecuteQuery(): void
     {
-        $queryBuilder = Entity::getQueryBuilder();
+        $queryBuilder = TestEntity::getQueryBuilder();
         $query = $queryBuilder
             ->newInsert()
-            ->into(Entity::getTableName())
+            ->into(TestEntity::getTableName())
             ->addRow(['name' => 'Test 1', 'display_name' => 'Test case 1', 'date' => '2020-09-11 20:34:25']);
-        $id = Entity::executeQuery($query);
+        $id = TestEntity::executeQuery($query);
         self::assertIsString($id);
 
         $query = $queryBuilder
             ->newSelect()
-            ->from(Entity::getTableName())
+            ->from(TestEntity::getTableName())
             ->cols(['*'])
             ->where('id = :id', ['id' => (int)$id]);
         /** @var array<array<string, mixed>> $result */
-        $result = Entity::executeQuery($query);
+        $result = TestEntity::executeQuery($query);
         self::assertNotEmpty($result);
         $entry = $result[0];
         self::assertArrayHasKey('id', $entry);
@@ -86,19 +89,19 @@ class EntityTest extends TestCase
 
         $query = $queryBuilder
             ->newUpdate()
-            ->table(Entity::getTableName())
+            ->table(TestEntity::getTableName())
             ->cols(['display_name' => 'Test case 4'])
             ->where('id = :id', ['id' => (int)$id]);
-        $result = Entity::executeQuery($query);
+        $result = TestEntity::executeQuery($query);
         self::assertTrue($result);
 
         $query = $queryBuilder
             ->newSelect()
-            ->from(Entity::getTableName())
+            ->from(TestEntity::getTableName())
             ->cols(['*'])
             ->where('id = :id', ['id' => (int)$id]);
         /** @var array<array<string, mixed>> $result */
-        $result = Entity::executeQuery($query);
+        $result = TestEntity::executeQuery($query);
         self::assertNotEmpty($result);
         $entry = $result[0];
         self::assertArrayHasKey('id', $entry);
@@ -111,46 +114,47 @@ class EntityTest extends TestCase
 
         $query = $queryBuilder
             ->newDelete()
-            ->from(Entity::getTableName())
+            ->from(TestEntity::getTableName())
             ->where('id = :id', ['id' => (int)$id]);
-        $result = Entity::executeQuery($query);
+        $result = TestEntity::executeQuery($query);
         self::assertTrue($result);
 
         $query = $queryBuilder
             ->newSelect()
-            ->from(Entity::getTableName())
+            ->from(TestEntity::getTableName())
             ->cols(['*'])
             ->where('id = :id', ['id' => (int)$id]);
-        $result = Entity::executeQuery($query);
+        $result = TestEntity::executeQuery($query);
         self::assertEmpty($result);
     }
 
     public function testGetTableName(): void
     {
-        $tableName = Entity::getTableName();
+        $tableName = TestEntity::getTableName();
 
         self::assertEquals('entity', $tableName);
     }
 
     public function testGetTableNameNoExplicitName(): void
     {
-        $tableName = EntityNoExplicitName::getTableName();
+        $tableName = TestEntityNoExplicitName::getTableName();
+        $className = (new ReflectionClass(TestEntityNoExplicitName::class))->getShortName();
 
-        self::assertEquals('EntityNoExplicitName', $tableName);
+        self::assertEquals($className, $tableName);
     }
 
     public function testFromArray(): void
     {
-        $query = Entity::getQueryBuilder()
+        $query = TestEntity::getQueryBuilder()
             ->newSelect()
-            ->from(Entity::getTableName())
+            ->from(TestEntity::getTableName())
             ->cols(['*'])
             ->limit(1)
             ->orderBy(['id ASC']);
         /** @var array<array<string, mixed>> $result */
-        $result = Entity::executeQuery($query);
+        $result = TestEntity::executeQuery($query);
 
-        $entity = Entity::fromArray($result[0]);
+        $entity = TestEntity::fromArray($result[0]);
         self::assertEquals($entity->id, $result[0]['id']);
         self::assertEquals($entity->name, $result[0]['name']);
         self::assertEquals($entity->displayName, $result[0]['display_name']);

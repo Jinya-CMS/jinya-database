@@ -5,8 +5,8 @@ namespace Jinya\Database;
 use DateTime;
 use Jinya\Database\Attributes\Column;
 use Jinya\Database\Attributes\Id;
-use Jinya\Database\Attributes\Optional;
 use Jinya\Database\Attributes\Table;
+use Jinya\Database\Converters\DateConverter;
 
 #[Table('creatable_entity')]
 class CreatableEntity implements Creatable
@@ -21,11 +21,9 @@ class CreatableEntity implements Creatable
     public string $name;
 
     #[Column(sqlName: 'display_name')]
-    #[Optional]
     public ?string $displayName;
 
-    #[Column]
+    #[Column(defaultValue: new DateTime('2021-05-01'))]
     #[DateConverter('Y-m-d H:i:s')]
-    #[Optional(new DateTime('2021-05-01'))]
     public ?DateTime $date;
 }

@@ -2,7 +2,7 @@
 
 namespace Jinya\Database;
 
-class EntityNoExplicitName
+class TestEntityNoExplicitName
 {
     use EntityTrait;
 }

@@ -10,7 +10,7 @@ trait CreatableEntityTrait
     use FindableEntityTrait;
 
     /**
-     * Creates the given entity
+     * Creates the current entity
      *
      * @return void
      * @throws PDOException

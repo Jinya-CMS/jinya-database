@@ -1,14 +1,15 @@
 <?php
 
-namespace Jinya\Database;
+namespace Jinya\Database\Converters;
 
 use Attribute;
 use DateTime;
+use Jinya\Database\ValueConverter;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class DateConverter implements ValueConverter
+readonly class DateConverter implements ValueConverter
 {
-    public function __construct(public readonly string $format)
+    public function __construct(public string $format)
     {
     }
 

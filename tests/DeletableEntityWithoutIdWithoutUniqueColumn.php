@@ -4,17 +4,14 @@ namespace Jinya\Database;
 
 use DateTime;
 use Jinya\Database\Attributes\Column;
-use Jinya\Database\Attributes\Id;
 use Jinya\Database\Attributes\Table;
+use Jinya\Database\Converters\DateConverter;
 
-#[Table('entity')]
-class Entity
+#[Table('deletable_entity_without_id_without_unique_column')]
+class DeletableEntityWithoutIdWithoutUniqueColumn implements Findable
 {
-    use EntityTrait;
-
-    #[Id]
-    #[Column]
-    public int $id;
+    use FindableEntityTrait;
+    use DeletableEntityTrait;
 
     #[Column]
     public string $name;

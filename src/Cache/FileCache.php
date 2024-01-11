@@ -28,7 +28,6 @@ abstract class FileCache
         callable $setter,
         bool $force = false,
     ): mixed {
-        /** @var string $cacheDirectory */
         $cacheDirectory = KeyCache::entry(
             '___Config',
             'CacheDirectory',
