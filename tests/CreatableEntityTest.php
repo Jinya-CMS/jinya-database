@@ -4,9 +4,10 @@ namespace Jinya\Database;
 
 use DateTime;
 use Jinya\Database\Exception\NotNullViolationException;
-use PHPUnit\Framework\TestCase;
+use Jinya\Database\Extensions\MigratingTestCase;
+use Jinya\Database\Migrations\CreatableEntityMigration;
 
-class CreatableEntityTest extends TestCase
+class CreatableEntityTest extends MigratingTestCase
 {
     public function testCreateEntityWithAllFields(): void
     {
@@ -39,32 +40,10 @@ class CreatableEntityTest extends TestCase
         $entity->create();
     }
 
-    protected function setUp(): void
+    protected function getMigrations(): array
     {
-        parent::setUp();
-        $identity = match (getenv('DATABASE_TYPE')) {
-            'mysql' => 'auto_increment',
-            'sqlite' => 'autoincrement',
-            'pgsql' => 'generated always as identity',
-            default => throw new \RuntimeException(),
-        };
-
-        $tableName = CreatableEntity::getTableName();
-        CreatableEntity::getPDO()->exec(
-            "
-        create table $tableName (
-            id integer primary key $identity,
-            name varchar(255) not null,
-            display_name varchar(255),
-            date timestamp
-        )"
-        );
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $tableName = CreatableEntity::getTableName();
-        CreatableEntity::getPDO()->exec("drop table $tableName");
+        return [
+            new CreatableEntityMigration(),
+        ];
     }
 }

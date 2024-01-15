@@ -3,9 +3,10 @@
 namespace Jinya\Database;
 
 use DateTime;
-use PHPUnit\Framework\TestCase;
+use Jinya\Database\Extensions\MigratingTestCase;
+use Jinya\Database\Migrations\FindableEntityMigration;
 
-class FindableEntityTest extends TestCase
+class FindableEntityTest extends MigratingTestCase
 {
     public function testFindById(): void
     {
@@ -81,43 +82,10 @@ class FindableEntityTest extends TestCase
         self::assertEquals(10, $entities[0]->id);
     }
 
-    protected function setUp(): void
+    protected function getMigrations(): array
     {
-        parent::setUp();
-        $identity = match (getenv('DATABASE_TYPE')) {
-            'mysql' => 'auto_increment',
-            'sqlite' => 'autoincrement',
-            'pgsql' => 'generated always as identity',
-            default => throw new \RuntimeException(),
-        };
-
-        $tableName = FindableEntity::getTableName();
-        FindableEntity::getPDO()->exec(
-            "
-        create table $tableName (
-            id integer primary key $identity,
-            name varchar(255) not null,
-            display_name varchar(255) not null,
-            date timestamp not null
-        )"
-        );
-
-        $rows = [];
-        for ($i = 11; $i < 21; ++$i) {
-            $rows[] = ['name' => "Test $i", 'display_name' => "Test case $i", 'date' => "20$i-09-11 20:34:25"];
-        }
-
-        $statement = FindableEntity::getQueryBuilder()
-            ->newInsert()
-            ->into(FindableEntity::getTableName())
-            ->addRows($rows);
-        FindableEntity::getPDO()->prepare($statement->getStatement())->execute($statement->getBindValues());
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $tableName = FindableEntity::getTableName();
-        FindableEntity::getPDO()->exec("drop table $tableName");
+        return [
+            new FindableEntityMigration()
+        ];
     }
 }

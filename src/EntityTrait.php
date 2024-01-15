@@ -413,11 +413,6 @@ PHP;
             throw new PDOException('Failed to execute query');
         }
 
-        try {
-            $statement->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (Throwable) {
-        }
-
         $result = $statement->execute($query->getBindValues());
         if ($result === false) {
             $ex = new PDOException('Failed to execute query');
@@ -462,20 +457,7 @@ PHP;
      */
     public static function getPDO(): PDO
     {
-        /** @var PDO $pdo */
-        $pdo = KeyCache::entry('___Database', 'PDO', static function (string $key) {
-            $options = KeyCache::get('___Config', 'ConnectionOptions');
-            $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-
-            return new PDO(
-                /** @phpstan-ignore-next-line */
-                KeyCache::get('___Config', 'ConnectionString'),
-                /** @phpstan-ignore-next-line */
-                options: $options
-            );
-        });
-
-        return $pdo;
+        return getPdo();
     }
 
     /**

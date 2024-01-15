@@ -2,65 +2,11 @@
 
 namespace Jinya\Database;
 
-use PHPUnit\Framework\TestCase;
+use Jinya\Database\Extensions\MigratingTestCase;
+use Jinya\Database\Migrations\DeletableEntityMigration;
 
-class DeletableEntityTest extends TestCase
+class DeletableEntityTest extends MigratingTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $identity = match (getenv('DATABASE_TYPE')) {
-            'mysql' => 'auto_increment',
-            'sqlite' => 'autoincrement',
-            'pgsql' => 'generated always as identity',
-            default => throw new \RuntimeException(),
-        };
-
-        $tableName = DeletableEntityWithId::getTableName();
-        DeletableEntityWithId::getPDO()->exec(
-            "
-        create table $tableName (
-            id integer primary key $identity,
-            name varchar(255) not null,
-            display_name varchar(255) not null,
-            date timestamp not null
-        )"
-        );
-
-        $tableName = DeletableEntityWithoutIdWithUniqueColumn::getTableName();
-        DeletableEntityWithoutIdWithUniqueColumn::getPDO()->exec(
-            "
-        create table $tableName (
-            name varchar(255) not null,
-            display_name varchar(255) not null,
-            date timestamp not null
-        )"
-        );
-
-        $tableName = DeletableEntityWithoutIdWithoutUniqueColumn::getTableName();
-        DeletableEntityWithoutIdWithoutUniqueColumn::getPDO()->exec(
-            "
-        create table $tableName (
-            name varchar(255) not null,
-            display_name varchar(255) not null,
-            date timestamp not null
-        )"
-        );
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $tableName = DeletableEntityWithId::getTableName();
-        DeletableEntityWithId::getPDO()->exec("drop table $tableName");
-
-        $tableName = DeletableEntityWithoutIdWithUniqueColumn::getTableName();
-        DeletableEntityWithoutIdWithUniqueColumn::getPDO()->exec("drop table $tableName");
-
-        $tableName = DeletableEntityWithoutIdWithoutUniqueColumn::getTableName();
-        DeletableEntityWithoutIdWithoutUniqueColumn::getPDO()->exec("drop table $tableName");
-    }
-
     public function testDeleteWithId(): void
     {
         $row = ['name' => 'Test', 'display_name' => 'Test case', 'date' => '2022-09-11 20:34:25'];
@@ -120,5 +66,12 @@ class DeletableEntityTest extends TestCase
         $entity->delete();
 
         self::assertCount(1, iterator_to_array(DeletableEntityWithoutIdWithoutUniqueColumn::findAll('name ASC')));
+    }
+
+    protected function getMigrations(): array
+    {
+        return [
+            new DeletableEntityMigration()
+        ];
     }
 }
