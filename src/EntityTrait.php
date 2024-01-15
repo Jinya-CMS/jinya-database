@@ -25,7 +25,6 @@ use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
-use Throwable;
 
 trait EntityTrait
 {

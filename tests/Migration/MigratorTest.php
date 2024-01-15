@@ -5,7 +5,6 @@ namespace Jinya\Database\Migration;
 use Jinya\Database\Migrations\CreatableEntityMigration;
 use Jinya\Database\Migrations\FindableEntityMigration;
 use Jinya\Database\Migrations\UpdatableEntityMigration;
-use PDO;
 use PHPUnit\Framework\TestCase;
 
 use function Jinya\Database\getPdo;
