@@ -66,6 +66,13 @@ class FindableEntityTest extends MigratingTestCase
         self::assertEquals(9, $entities[0]->id);
     }
 
+    public function testCountByFilters(): void
+    {
+        $count = FindableEntity::countByFilters(['name = :name' => ['name' => 'Test 11']]);
+
+        self::assertEquals(1, $count);
+    }
+
     public function testFindAll(): void
     {
         $entities = iterator_to_array(FindableEntity::findAll());
@@ -80,6 +87,13 @@ class FindableEntityTest extends MigratingTestCase
 
         self::assertCount(10, $entities);
         self::assertEquals(10, $entities[0]->id);
+    }
+
+    public function testCountAll(): void
+    {
+        $count = FindableEntity::countAll();
+
+        self::assertEquals(10, $count);
     }
 
     protected function getMigrations(): array

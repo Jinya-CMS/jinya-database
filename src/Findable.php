@@ -40,4 +40,19 @@ interface Findable
      * @return Iterator<self>
      */
     public static function findRange(int $start, int $count, string $orderBy = 'id ASC'): Iterator;
+
+    /**
+     * Counts all entities of the current type
+     *
+     * @return int
+     */
+    public static function countAll(): int;
+
+    /**
+     * Counts the entity by the given filters
+     *
+     * @param array<array{string, array<array-key, mixed>}> $filters
+     * @return int
+     */
+    public static function countByFilters(array $filters): int;
 }

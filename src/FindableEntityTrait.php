@@ -103,4 +103,45 @@ trait FindableEntityTrait
             yield self::fromArray($item);
         }
     }
+
+    /**
+     * Counts all entities of the current type
+     *
+     * @return int
+     */
+    public static function countAll(): int
+    {
+        $select = self::getQueryBuilder()
+            ->newSelect()
+            ->from(self::getTableName())
+            ->cols(['count(*) AS count']);
+
+        /** @var array<array<array-key, mixed>> $data */
+        $data = self::executeQuery($select);
+
+        return $data[0]['count'];
+    }
+
+    /**
+     * Counts the entity by the given filters
+     *
+     * @param array<array{string, array<array-key, mixed>}> $filters
+     * @return int
+     */
+    public static function countByFilters(array $filters): int
+    {
+        $select = self::getQueryBuilder()
+            ->newSelect()
+            ->from(self::getTableName())
+            ->cols(['count(*) AS count']);
+
+        foreach ($filters as $key => $filter) {
+            $select = $select->where($key, $filter);
+        }
+
+        /** @var array<array<array-key, mixed>> $data */
+        $data = self::executeQuery($select);
+
+        return $data[0]['count'];
+    }
 }
