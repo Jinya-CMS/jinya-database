@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  jinya-database:
+    image: registry.ulbricht.casa/jinya-cms/jinya-cms-php-base-test-image:cli
+    volumes:
+      - .:/var/www/html
+  jinya-database-mariadb:
+    image: library/mariadb:latest
+    environment:
+      MARIADB_DATABASE: jinya
+      MARIADB_PASSWORD: jinya
+      MARIADB_ROOT_PASSWORD: jinya
+      MARIADB_USER: jinya

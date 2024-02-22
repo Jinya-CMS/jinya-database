@@ -5,8 +5,7 @@
       <tool tool_name="PHPUnit">
         <cache>
           <versions>
-            <info id="$PROJECT_DIR$/phpunit.phar" version="10.4.1" />
-            <info id="Local/home/developer/jinya-database/phpunit.phar" version="10.4.1" />
+            <info id="interpreter-7eb51404-1f38-42b2-857e-fd2e2db2d10c" version="10.4.1" />
           </versions>
         </cache>
       </tool>

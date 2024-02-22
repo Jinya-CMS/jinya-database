@@ -21,9 +21,9 @@ trait CreatableEntityTrait
         $this->checkRequiredColumns();
         $row = $this->toSqlArray();
 
-        $insert = CreatableEntity::getQueryBuilder()
+        $insert = self::getQueryBuilder()
             ->newInsert()
-            ->into(CreatableEntity::getTableName())
+            ->into(self::getTableName())
             ->addRow($row);
 
         self::getPDO()->prepare($insert->getStatement())->execute($insert->getBindValues());
