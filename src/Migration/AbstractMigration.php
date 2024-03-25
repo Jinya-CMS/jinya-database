@@ -14,7 +14,7 @@ abstract class AbstractMigration
      * @return string
      * @internal
      */
-    final public function getMigrationName(): string
+    public function getMigrationName(): string
     {
         return (new ReflectionClass(static::class))->getShortName();
     }
