@@ -1,5 +1,7 @@
 {
   "name": "jinya/database",
+  "description": "A simple database struct mapper that resembles some features of an ORM",
+  "license": "MIT",
   "require": {
     "php": "^8.2",
     "ext-pdo": "*",
