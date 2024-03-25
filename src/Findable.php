@@ -10,7 +10,7 @@ interface Findable
      * Finds all entities of the current type
      *
      * @param string $orderBy
-     * @return Iterator<self>
+     * @return Iterator<static>
      */
     public static function findAll(string $orderBy = 'id ASC'): Iterator;
 
@@ -18,16 +18,16 @@ interface Findable
      * Finds the entity by the given id
      *
      * @param string|int $id
-     * @return self
+     * @return static|null
      */
-    public static function findById(string|int $id): mixed;
+    public static function findById(string|int $id): static|null;
 
     /**
      * Finds the entity by the given filters
      *
      * @param array<array{string, array<array-key, mixed>}> $filters
      * @param string $orderBy
-     * @return Iterator<self>
+     * @return Iterator<static>
      */
     public static function findByFilters(array $filters, string $orderBy = 'id ASC'): Iterator;
 
@@ -37,7 +37,7 @@ interface Findable
      * @param int $start
      * @param int $count
      * @param string $orderBy
-     * @return Iterator<self>
+     * @return Iterator<static>
      */
     public static function findRange(int $start, int $count, string $orderBy = 'id ASC'): Iterator;
 

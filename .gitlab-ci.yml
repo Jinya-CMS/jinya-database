@@ -20,6 +20,13 @@ pint:
   script:
     - ./vendor/bin/pint --test
 
+phpstan:
+  extends:
+    - .install-dependencies
+  stage: lint
+  script:
+    - ./tools/phpstan --no-progress analyze ./src --memory-limit 1G
+
 phpunit:
   stage: test
   extends:

@@ -10,7 +10,7 @@ use Exception;
 class NotNullViolationException extends Exception
 {
     /**
-     * @param array $columns The columns that are null
+     * @param string[] $columns The columns that are null
      */
     public function __construct(public readonly array $columns)
     {

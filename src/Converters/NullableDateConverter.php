@@ -18,17 +18,17 @@ readonly class NullableDateConverter implements ValueConverter
      * @param string $input
      * @return DateTime|null
      */
-    public function from(mixed $input): mixed
+    public function from(mixed $input): DateTime|null
     {
         return DateTime::createFromFormat($this->format, $input) ?: null;
     }
 
     /**
      * @inheritDoc
-     * @param DateTime $input
+     * @param DateTime|null $input
      * @return string|null
      */
-    public function to(mixed $input): mixed
+    public function to(mixed $input): string|null
     {
         return $input?->format($this->format);
     }

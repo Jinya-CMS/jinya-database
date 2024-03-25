@@ -20,7 +20,7 @@ trait UpdatableEntityTrait
     {
         $this->checkRequiredColumns();
         $row = $this->toSqlArray();
-        $where = self::getWhereToIdentifyEntity();
+        $where = $this->getWhereToIdentifyEntity();
 
         $statement = self::getQueryBuilder()
             ->newUpdate()

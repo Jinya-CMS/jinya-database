@@ -22,6 +22,7 @@ use PDO;
 use PDOException;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
@@ -38,6 +39,9 @@ trait EntityTrait
         return self::getColumns()['bySqlName'][$name] ?? null;
     }
 
+    /**
+     * @return class-string
+     */
     private static function getClass(): string
     {
         return static::class;
@@ -106,6 +110,7 @@ trait EntityTrait
         self::getColumns();
         /** @var string $filename */
         $filename = (new ReflectionClass(self::getClass()))->getFileName();
+        /** @var array{id: array{sqlName: string, name: string}} $cache */
         $cache = FileCache::entry(
             $filename,
             __NAMESPACE__,
@@ -132,7 +137,10 @@ PHP;
             }
         );
 
-        return $cache['id'];
+        /** @var array{sqlName: string, name: string} $id */
+        $id = $cache['id'];
+
+        return $id;
     }
 
     /**
@@ -184,10 +192,20 @@ PHP;
                         $converterString = "new $converterClass($converterArgs)";
                     } elseif ($autoConverterEnabled) {
                         $type = $property->getType();
+                        $types = [];
                         if ($type instanceof ReflectionNamedType) {
                             $types = [$type->getName()];
-                        } else {
-                            $types = array_map(static fn (ReflectionType $type) => $type->getName(), $type->getTypes());
+                        } elseif ($type instanceof ReflectionIntersectionType) {
+                            $types = array_map(
+                                static function (ReflectionType $type) {
+                                    if ($type instanceof ReflectionNamedType) {
+                                        return $type->getName();
+                                    }
+
+                                    return 'mixed';
+                                },
+                                $type->getTypes()
+                            );
                         }
                         if (in_array(DateTime::class, $types, false)) {
                             $dateFormat = 'Y-m-d H:i:s';
@@ -233,7 +251,7 @@ PHP;
                                     string $class,
                                     string $key,
                                     string $cacheClass
-                                ) use ($ids, $sqlName, $name): string {
+                                ) use ($sqlName, $name): string {
                                     return <<<PHP
 <?php
 global \$$cacheClass;
@@ -440,10 +458,11 @@ PHP;
      * Maps the given array to this class
      *
      * @param array<string, mixed> $item
-     * @return self
+     * @return static
      */
-    public static function fromArray(array $item): mixed
+    public static function fromArray(array $item): static
     {
+        /** @phpstan-ignore-next-line */
         $entity = new static();
         foreach ($item as $key => $value) {
             $column = self::getColumnBySqlName($key);

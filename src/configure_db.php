@@ -33,10 +33,13 @@ function getPdo(): PDO
 {
     /** @var PDO $pdo */
     $pdo = KeyCache::entry('___Database', 'PDO', static function (string $key) {
+        /** @var array<int, mixed> $options */
         $options = KeyCache::get('___Config', 'ConnectionOptions');
         $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
-        return new PDO(KeyCache::get('___Config', 'ConnectionString'), options: $options);
+        /** @var string $dsn */
+        $dsn = KeyCache::get('___Config', 'ConnectionString');
+        return new PDO($dsn, options: $options);
     });
 
     return $pdo;

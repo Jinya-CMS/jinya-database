@@ -12,7 +12,7 @@ trait FindableEntityTrait
      * Finds all entities for the current type
      *
      * @param string $orderBy
-     * @return Iterator<self>
+     * @return Iterator<static>
      */
     public static function findAll(string $orderBy = 'id ASC'): Iterator
     {
@@ -33,9 +33,9 @@ trait FindableEntityTrait
      * Finds the entity by the given id
      *
      * @param string|int $id
-     * @return self|null
+     * @return static|null
      */
-    public static function findById(string|int $id): mixed
+    public static function findById(string|int $id): static|null
     {
         $idColumn = self::getIdProperty()['sqlName'] ?? 'id';
         $select = self::getQueryBuilder()
@@ -59,7 +59,7 @@ trait FindableEntityTrait
      * @param int $start
      * @param int $count
      * @param string $orderBy
-     * @return Iterator<self>
+     * @return Iterator<static>
      */
     public static function findRange(int $start, int $count, string $orderBy = 'id ASC'): Iterator
     {
@@ -83,7 +83,7 @@ trait FindableEntityTrait
      *
      * @param array<string, array<string, mixed>> $filters
      * @param string $orderBy
-     * @return Iterator<self>
+     * @return Iterator<static>
      */
     public static function findByFilters(array $filters, string $orderBy = 'id ASC'): Iterator
     {
@@ -118,8 +118,10 @@ trait FindableEntityTrait
 
         /** @var array<array<array-key, mixed>> $data */
         $data = self::executeQuery($select);
+        /** @var int $count */
+        $count = $data[0]['count'];
 
-        return $data[0]['count'];
+        return $count;
     }
 
     /**
@@ -141,7 +143,9 @@ trait FindableEntityTrait
 
         /** @var array<array<array-key, mixed>> $data */
         $data = self::executeQuery($select);
+        /** @var int $count */
+        $count = $data[0]['count'];
 
-        return $data[0]['count'];
+        return $count;
     }
 }

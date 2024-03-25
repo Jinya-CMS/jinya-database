@@ -18,7 +18,7 @@ readonly class DateConverter implements ValueConverter
      * @param string $input
      * @return DateTime
      */
-    public function from(mixed $input): mixed
+    public function from(mixed $input): DateTime
     {
         return DateTime::createFromFormat($this->format, $input) ?: new DateTime();
     }
@@ -28,7 +28,7 @@ readonly class DateConverter implements ValueConverter
      * @param DateTime $input
      * @return string
      */
-    public function to(mixed $input): mixed
+    public function to(mixed $input): string
     {
         return $input->format($this->format);
     }
