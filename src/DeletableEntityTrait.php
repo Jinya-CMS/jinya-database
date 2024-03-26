@@ -33,7 +33,7 @@ trait DeletableEntityTrait
             self::getPDO()->prepare($delete->getStatement())->execute($delete->getBindValues());
         } catch (PDOException $exception) {
             $errorInfo = $exception->errorInfo ?? ['', ''];
-            if ($errorInfo[0] === '23503' || ($errorInfo[0] === '23000' && $errorInfo[1] === 1451)) {
+            if ($errorInfo[0] === '23503' || ($errorInfo[0] === '23000' && ($errorInfo[1] === 1451 || $errorInfo[1] === 19))) {
                 throw new ForeignKeyFailedException($exception, self::getPDO());
             }
 
