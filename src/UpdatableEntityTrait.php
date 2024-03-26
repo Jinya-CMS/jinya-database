@@ -45,7 +45,7 @@ trait UpdatableEntityTrait
                 throw new UniqueFailedException($exception, self::getPDO());
             }
 
-            if ($errorInfo[0] === '23503' || ($errorInfo[0] === '23000' && $errorInfo[1] === 1451)) {
+            if ($errorInfo[0] === '23503' || ($errorInfo[0] === '23000' && $errorInfo[1] === 1452)) {
                 throw new ForeignKeyFailedException($exception, self::getPDO());
             }
 
