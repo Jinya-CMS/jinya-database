@@ -56,6 +56,7 @@ phpunit:
     POSTGRES_DB: jinya
   services:
     - name: ${DATABASE_IMAGE}
+      alias: database
   parallel:
     matrix:
       # MySQL testing
