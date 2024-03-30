@@ -20,6 +20,10 @@ readonly class NullableDateConverter implements ValueConverter
      */
     public function from(mixed $input): DateTime|null
     {
+        if ($input === null) {
+            return null;
+        }
+
         return DateTime::createFromFormat($this->format, $input) ?: null;
     }
 
