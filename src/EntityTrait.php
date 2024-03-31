@@ -337,7 +337,7 @@ PHP;
                         $result[$column->sqlName] = $column->converter ? $column->converter->to(
                             $this->{$property}
                         ) : $this->{$property};
-                    } elseif (($result[$column->sqlName] ?? null) === null && $column->defaultValue !== null) {
+                    } elseif (($result[$column->sqlName] ?? null) === null) {
                         $result[$column->sqlName] = $column->converter ? $column->converter->to(
                             $column->defaultValue
                         ) : $column->defaultValue;
