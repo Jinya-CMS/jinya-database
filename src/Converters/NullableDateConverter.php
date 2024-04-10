@@ -15,7 +15,7 @@ readonly class NullableDateConverter implements ValueConverter
 
     /**
      * @inheritDoc
-     * @param string $input
+     * @param string|null $input
      * @return DateTime|null
      */
     public function from(mixed $input): DateTime|null
