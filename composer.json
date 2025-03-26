@@ -3,7 +3,7 @@
   "description": "A simple database struct mapper that resembles some features of an ORM",
   "license": "MIT",
   "require": {
-    "php": "^8.2",
+    "php": "^8.3",
     "ext-pdo": "*",
     "aura/sqlquery": "^3.0",
     "jetbrains/phpstorm-attributes": "^1.0"
@@ -14,7 +14,7 @@
     "ext-pdo_pgsql": "*",
     "ext-pdo_sqlite": "*",
     "ext-apcu": "*",
-    "laravel/pint": "v1.19.0",
+    "laravel/pint": "v1.21.2",
     "symfony/filesystem": "v7.2.0"
   },
   "suggest": {
