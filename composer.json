@@ -14,7 +14,7 @@
     "ext-pdo_pgsql": "*",
     "ext-pdo_sqlite": "*",
     "ext-apcu": "*",
-    "laravel/pint": "v1.24.0",
+    "laravel/pint": "v1.25.1",
     "symfony/filesystem": "v7.3.2"
   },
   "suggest": {
