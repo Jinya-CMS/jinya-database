@@ -44,9 +44,9 @@ function getPdo(): PDO
 
         /** @var string $dsn */
         $dsn = KeyCache::get('___Config', 'ConnectionString');
-        /** @var string $dsn */
+        /** @var string $username */
         $username = KeyCache::get('___Config', 'Username');
-        /** @var string $dsn */
+        /** @var string $password */
         $password = KeyCache::get('___Config', 'Password');
         return new PDO($dsn, username: $username, password: $password, options: $options);
     });
