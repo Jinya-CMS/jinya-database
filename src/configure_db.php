@@ -21,12 +21,12 @@ function configure_jinya_database(
     string $username = '',
     string $password = ''
 ): void {
-    KeyCache::entry('___Config', 'CacheDirectory', static fn (string $key) => $cacheDirectory, true);
-    KeyCache::entry('___Config', 'ConnectionString', static fn (string $key) => $connectionString, true);
-    KeyCache::entry('___Config', 'Username', static fn (string $key) => $username, true);
-    KeyCache::entry('___Config', 'Password', static fn (string $key) => $password, true);
-    KeyCache::entry('___Config', 'ConnectionOptions', static fn (string $key) => $connectionOptions, true);
-    KeyCache::entry('___Config', 'EnableAutoConvert', static fn (string $key) => $enableAutoConvert, true);
+    KeyCache::entry('___Config', 'CacheDirectory', static fn(string $key) => $cacheDirectory, true);
+    KeyCache::entry('___Config', 'ConnectionString', static fn(string $key) => $connectionString, true);
+    KeyCache::entry('___Config', 'Username', static fn(string $key) => $username, true);
+    KeyCache::entry('___Config', 'Password', static fn(string $key) => $password, true);
+    KeyCache::entry('___Config', 'ConnectionOptions', static fn(string $key) => $connectionOptions, true);
+    KeyCache::entry('___Config', 'EnableAutoConvert', static fn(string $key) => $enableAutoConvert, true);
     KeyCache::unset('___Database', 'PDO');
 }
 
@@ -48,7 +48,14 @@ function getPdo(): PDO
         $username = KeyCache::get('___Config', 'Username');
         /** @var string $password */
         $password = KeyCache::get('___Config', 'Password');
-        return new PDO($dsn, username: $username, password: $password, options: $options);
+        if (!empty($password)) {
+            return new PDO($dsn, username: $username, password: $password, options: $options);
+        }
+        if (!empty($username)) {
+            return new PDO($dsn, username: $username, options: $options);
+        }
+
+        return new PDO($dsn, options: $options);
     });
 
     return $pdo;
